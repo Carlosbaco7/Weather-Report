@@ -1,32 +1,111 @@
-<section class="vh-100" style="background-color: #4B515D ;">
-<div class=" container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-8 col-lg-6 col-xl-4">
-            <div class="card" style="color: #4B515D; border-radius: 35px;">
-            <div class="card-body p-4">
-                <div class="d-flex">
-                <h6 class="flex-grow-1">Warsaw</h6>
-                <h6>15:07</h6>    
-                </div>
-                 <div class="d-flex flex-column text-center mt-5 mb-4">
-                    <h6 class="display-4 mb-0 font-weight-bold" style="color: #1c2331;">13°C</h6>
-                    <span class="small" style="color: #868B94;">Stormy</span>
-                 </div>
-                <div class="d-flex align-items-center">
-                <div class="flex-grow-1" style="font-size: 1rem;">
-                </div>
-                <div><i class="fasfa-sun fa-fw" style="color: #868B94;"></i>
-                <span class="ms-1">0.2h</span>
-                </div>
-                </div>
-                <div>
-                    <img 
-                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/ilu1.webp"
-                    width="100px">
-                </div>
+<html>
+    <head>
+     <link rel="stylesheet" href="src/Css/Style.css">
+    </head>   
 
-            </div>
-        </div>
-    </div>
-</div>
 </section>
+<script src="src/js/main.js"></script>
+
+<div class="card">
+    <div class="search">
+        <input id="searchBox" type="text" placeholder="Enter city name"
+        spellcheck="false">
+        <button id="searchBtn"><img src="Images/images/search.png"></button>
+       </div>
+     
+    <div class="error">
+      <p>Invalid city name</p>
+    </div>
+    <div class="weather">
+      <img src="Images/images/rain.png" class="weather-icon">
+      <h1 class="temp">22°c</h1>
+      <h2 class="city">New York</h2>
+      <div class="details">
+        <div class="col">
+          <img src="Images/images/humidity.png">
+          <div>
+            <p class="humidity">50%</p>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="col">
+          <img src="Images/images/wind.png">
+          <div>
+            <p class="wind">15 km/h</p>
+            <p>Wind Speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script> 
+  
+  const apiKey = "c8831bc24e8854bf9a40be8af6a5ba27";
+  const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+  const searchBox = document.querySelector (".search input");
+  const searchBtn = document.querySelector (".search button");
+  const weatherIcon = document.querySelector(".weather-icon");
+
+  async function checkweather(city){
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+    if(response.status == 404){
+      document.querySelector(".error").style.display = "block";
+      document.querySelector(".weather").style.display = "none";
+    }else{ var data = await response.json();
+
+document.querySelector(".city").innerHTML = data.name;
+document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
+document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+
+if(data.weather[0].main == "Clouds"){
+  weatherIcon.src = "images/images/clouds.png";
+}
+else if(data.weather[0].main == "Clear"){
+  weatherIcon.src = "images/images/clear.png";
+} 
+else if(data.weather[0].main == "Rain"){
+  weatherIcon.src = "images/images/rain.png";
+}
+else if(data.weather[0].main == "Drizzle"){
+  weatherIcon.src = "images/images/drizzle.png";
+}
+else if(data.weather[0].main == "Mist"){
+  weatherIcon.src = "images/images/mist.png";
+}
+
+document.querySelector(".weather").style.display = "block";
+document.querySelector(".error").style.display = "none";
+
+}
+
+
+
+
+}
+
+
+   
+  searchBtn.addEventListener("click", ()=>{
+    checkweather(searchBox.value);
+  })
+  checkweather();
+
+  var input = document.getElementById("searchBox");
+      input.addEventListener("keypress", function(event){
+          if (event.key === "Enter"){
+          event.preventDefault();
+
+          document.getElementById("searchBtn").click();
+          }
+      });
+
+
+  </script>
+
+</body>
+</html>
